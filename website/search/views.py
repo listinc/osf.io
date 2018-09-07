@@ -21,6 +21,17 @@ from website.search import exceptions
 import website.search.search as search
 from website.search.util import build_query
 
+import requests
+
+from furl import furl
+
+from django import http
+
+from rest_framework import views
+from rest_framework.parsers import JSONParser
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+
 logger = logging.getLogger(__name__)
 
 RESULTS_PER_PAGE = 250
@@ -72,6 +83,7 @@ def search_search(**kwargs):
 
     results['time'] = round(time.time() - tick, 2)
     return results
+
 
 @ember_flag_is_active('ember_search_page')
 def search_view():
@@ -203,3 +215,60 @@ def search_contributor(auth):
     size = int(bleach.clean(request.args.get('size', '5'), tags=[], strip=True))
     return search.search_contributor(query=query, page=page, size=size,
                                      exclude=exclude, current_user=user)
+
+
+class ElasticSearchView(views.APIView):
+    """
+    Elasticsearch endpoint for SHARE Data.
+    - [Creative Works](/api/v2/search/creativeworks/_search) - Search individual documents harvested
+    - [Agents](/api/v2/search/agents/_search) - Search agents from havested documents
+    - [Tags](/api/v2/search/tags/_search) - Tags placed on documents
+    - [Sources](/api/v2/search/sources/_search) - Data sources
+    """
+    parser_classes = (JSONParser,)
+    renderer_classes = (JSONRenderer, )
+
+    def get(self, request, url_bits='', *args, **kwargs):
+        return self._handle_request(request, url_bits)
+
+    def post(self, request, url_bits='', *args, **kwargs):
+        return self._handle_request(request, url_bits)
+
+    def _handle_request(self, request, url_bits):
+        params = request.query_params.copy()
+
+        if 'scroll' in params:
+            return http.HttpResponseForbidden(reason='Scroll is not supported.')
+
+        v = params.pop('v', None)
+        index = 'website'
+        if v:
+            v = 'v{}'.format(v[0])
+            if v not in '':
+                return http.HttpResponseBadRequest('Invalid search index version')
+            index = '{}_{}'.format(index, v)
+        es_url = furl('http://localhost:9200/').add(path=index, query_params=params).add(path=url_bits.split('/'))
+
+        if request.method == 'GET':
+            resp = requests.get(es_url)
+        elif request.method == 'POST':
+            resp = requests.post(es_url, json=request.data)
+        else:
+            raise NotImplementedError()
+        return Response(status=resp.status_code, data=resp.json(), headers={'Content-Type': 'application/vnd.api+json'})
+
+
+@handle_search_errors
+def search_preprints(**kwargs):
+    params = request.get_json()
+
+    index = 'share_customtax_1'
+
+    if request.method == 'GET':
+        resp = requests.get(es_url)
+    elif request.method == 'POST':
+        resp = search.search_prerints(params, index=index)
+        # resp = requests.post(es_url, json=request.data)
+    else:
+        raise NotImplementedError()
+    return resp

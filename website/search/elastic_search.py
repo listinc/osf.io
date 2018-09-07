@@ -238,6 +238,43 @@ def search(query, index=None, doc_type='_all', raw=False):
     }
     return return_value
 
+
+@requires_search
+def search_preprints(query, index=None, doc_type='_all', raw=False):
+    """Search for a query
+
+    :param query: The substring of the username/project name/tag to search for
+    :param index:
+    :param doc_type:
+
+    :return: List of dictionaries, each containing the results, counts, tags and typeAliases
+        results: All results returned by the query, that are within the index and search type
+        counts: A dictionary in which keys are types and values are counts for that type, e.g, count['total'] is the sum of the other counts
+        tags: A list of tags that are returned by the search query
+        typeAliases: the doc_types that exist in the search database
+    """
+    index = index or INDEX
+    query_data = copy.deepcopy(query)
+
+    if 'query' in query_data:
+        if 1 < len(query_data['query']['bool']['filter']) <= 2:
+            try:
+                del query_data['query']['bool']['filter'][1]
+            except KeyError:
+                pass
+        elif 2 < len(query_data['query']['bool']['filter']):
+            try:
+                del query_data['query']['bool']['filter'][2]
+            except KeyError:
+                pass
+
+    # logger.info(query_data)
+    # Run the real query and get the results
+    raw_results = client().search(index=index, doc_type=doc_type, body=query_data)
+
+    return raw_results
+
+
 def format_results(results):
     ret = []
     for result in results:
@@ -681,9 +718,9 @@ def delete_index(index):
 
 @requires_search
 def create_index(index=None):
-    """Creates index with some specified mappings to begin with,
+    '''Creates index with some specified mappings to begin with,
     all of which are applied to all projects, components, preprints, and registrations.
-    """
+    '''
     index = index or INDEX
     document_types = ['project', 'component', 'registration', 'user', 'file', 'institution', 'preprint', 'collectionSubmission']
     project_like_types = ['project', 'component', 'registration', 'preprint']
@@ -758,7 +795,7 @@ def delete_doc(elastic_document_id, node, index=None, category=None):
 
 
 @requires_search
-def search_contributor(query, page=0, size=10, exclude=None, current_user=None):
+def  search_contributor(query, page=0, size=10, exclude=None, current_user=None):
     """Search for contributors to add to a project using elastic search. Request must
     include JSON data with a "query" field.
 
