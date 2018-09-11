@@ -4,7 +4,7 @@ from osf import formdata
 from osf import request
 
 
-def create_user_execute():
+def bulk_create_user():
     fm = formdata.FormData()
     rp = request.RequestPreprints()
     data = create_user_email_dict()

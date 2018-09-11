@@ -38,6 +38,8 @@ def read_po_condition():
     print(len(data))
     for i in data:
         if i.get('po') == '한국정보관리학회':
+            if '기계학습' in i.get('title01'):
+                print(i)
             author_list.append(i.get('author_main'))
             count+=1
 

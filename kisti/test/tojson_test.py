@@ -204,4 +204,3 @@ od2 = collections.OrderedDict(sorted(data2.get('_source').items()))
 print("---test---")
 for key, value in od2.items():
 	print(key, value)
-	

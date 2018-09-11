@@ -31,15 +31,11 @@ class RequestPreprints():
         r = requests.get(url, auth=HTTPBasicAuth(email, ''), headers=headers)
         return r
 
-    def get_json_id(self, data):
-        data = json.loads(data)
-        id = data.get("data").get("id")
-        return id
-
-    def get_files_id(self, data):
-        data = json.loads(data)
-        id = data.get('data').get('id')
-        return id.lstrip("osfstorage/")
+    def request_newfile(self, email, nodes, file_name, file_data):
+        headers = {'content-type': 'application/json'}
+        url = 'http://{0}:7777/v1/resources/{1}/providers/osfstorage/?kind=file&name={2}'.format(self.host, nodes, file_name)
+        r = requests.put(url, data=file_data, auth=HTTPBasicAuth(email, ''), headers=headers)
+        return r
 
     def confirm_user(self, id, confirm_id):
         separator = '/'

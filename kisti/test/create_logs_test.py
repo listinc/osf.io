@@ -21,4 +21,5 @@ def action_preprints():
     print(r.text)
 
 
-action_preprints()
+if '__name__' == '__main__':
+    action_preprints()
