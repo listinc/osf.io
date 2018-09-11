@@ -14,7 +14,19 @@ def create_user_execute():
         r = rp.create_user(datas)
         if r.status_code > 300:
             print(r.status_code, datas.get('email'))
-    print("done: create_dummy_user")
+    print("done: created_dummy_user")
+
+
+def create_the_user_execute(data):
+    fm = formdata.FormData()
+    rp = request.RequestPreprints()
+
+    for key, value in data.items():
+        datas = fm.create_user(value, key, value.split('@', 1)[0])
+        r = rp.create_user(datas)
+        if r.status_code > 300:
+            print(r.status_code, datas.get('email'))
+    print("done: created what you want to user")
 
 
 def create_user_email_dict():

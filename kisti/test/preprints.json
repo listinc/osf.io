@@ -1,0 +1,25 @@
+{
+  "data": {
+    "attributes": {},
+    "relationships": {
+      "node": {
+        "data": {
+          "type": "nodes",
+          "id": "{node_id}"
+        }
+      },
+      "primary_file": {
+        "data": {
+          "type": "primary_files",
+          "id": "{primary_file_id}"
+        }
+      },
+      "provider": {
+        "data": {
+          "type": "providers",
+          "id": "{preprint_provider_id}"
+        }
+      }
+    }
+  }
+}

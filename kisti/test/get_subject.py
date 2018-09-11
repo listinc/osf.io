@@ -1,16 +1,14 @@
 import psycopg2
 import psycopg2.extras
-from osf import request
 
 
-def confirm_user():
-    cp = request.RequestPreprints()
+def get_data():
     conn_string = "host='localhost' dbname='osf' user='postgres'"
 
     conn = psycopg2.connect(conn_string)
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-    sql_string = "select id, email_verifications from osf_osfuser order by id desc"
+    sql_string = "select text from osf_osfsubject"
     cursor.execute(sql_string)
     users = cursor.fetchall()
 
@@ -25,13 +23,8 @@ def confirm_user():
             cursor.execute(sql_string)
             samdasu2 = cursor.fetchone()
             guid = samdasu2.get('_id')
-            r = cp.confirm_user(guid, confirm_id)
-            if r.status_code > 299:
-                print(url, r.status_code)
+            bulk_confirm_user.confirm_user(guid, confirm_id)
 
     conn.commit()
     print("done: confirm_all_user")
 
-
-if __name__ == '__main__':
-    confirm_user()
