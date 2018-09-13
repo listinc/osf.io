@@ -5,7 +5,7 @@ from requests.auth import HTTPBasicAuth
 
 class RequestPreprints():
     def __init__(self):
-        self.host = 'localhost'
+        self.host = '112.218.235.198'
 
     def request_preprints(self, email, preprints_data):
         headers = {'content-type': 'application/json'}
@@ -54,7 +54,7 @@ class RequestPreprints():
         url = "http://{}:8000/v2/nodes/{}/contributors/?embed=node&send_email=false".format(self.host, nodes_id)
         data = json.dumps(contributor_data)
         headers = {'content-type': 'application/json'}
-        r = requests.patch(url, data, auth=HTTPBasicAuth(email, ''), headers=headers)
+        r = requests.post(url, data, auth=HTTPBasicAuth(email, ''), headers=headers)
         return r
 
     #indexing

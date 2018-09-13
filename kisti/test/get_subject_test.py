@@ -1,5 +1,7 @@
 import psycopg2
 import psycopg2.extras
+import unittest
+from osf import subject
 
 
 def get_data():
@@ -27,4 +29,16 @@ def get_data():
 
     conn.commit()
     print("done: confirm_all_user")
+
+class CreateUser(unittest.TestCase):
+    def test_subject_(self):
+        library = ['한국기록관리학회', '한국기록학회', '한국도서관·정보학회', '한국문헌정보학회', '한국비블리아학회', '한국서지학회', '한국정보관리학회']
+        po = '한국정보관리학회'
+        if po in library:
+            self.assertTrue(True)
+    def test_subject_form(self):
+        sj = subject.Subject()
+        data = sj.get_subject('한국정보관리학회')
+        self.assertEqual(['5b584937cd0fb400014752ba', '5b584937cd0fb400014752cd'], data)
+
 

@@ -12,28 +12,27 @@ import time
 if __name__ == '__main__':
     start_time = time.time()
     rj = read_json.ReadJson()
-    datas = rj.read_json('./json/kci_paper.json')
-    author = users.create_user_email_dict()
     create_preprints = cp.RequestPreprints()
     create_file = cf.CreateFile()
     fm = formdata.FormData()
     gs = subject.Subject()
+    datas = rj.get_library()
+    author = users.create_user_email_dict()
     count = 0
     for data in datas:
         # /test/
-        if count > 0:
-            print("1 created in --- %s seconds ---" % (time.time() - start_time))
-            break
+        # if count > 0:
+        #     print("1 created in --- %s seconds ---" % (time.time() - start_time))
+        #     break
         count += 1
-        title01 = data.get("title01")
-        print(title01)
-        author_main = data.get("author_main")
-        author_sub = data.get("author_sub")
-        p_year_month = data.get("p_year_month")
-        po = data.get("po")
-        abstract = data.get("abstract")
-        url = data.get("url")
-        doi = data.get("doi")
+        title01 = data.get("TITLE01")
+        author_main = data.get("AUTHOR_MAIN")
+        author_sub = data.get("AUTHOR_SUB")
+        p_year_month = data.get("P_YEAR_MONTH")
+        po = data.get("PO")
+        abstract = data.get("ABSTRACT")
+        url = data.get("URL")
+        doi = data.get("DOI")
         if doi is not None:
             doi = doi.lstrip("http://dx.doi.org/")
         email = author.get(author_main)
@@ -47,12 +46,12 @@ if __name__ == '__main__':
             print("user not found:", email)
         #create node
         nodes_data = fm.create_nodes(title01)
-        nodes_data = create_preprints.request_nodes(email, nodes_data)
-        if nodes_data.status_code > 300:
-            print("create node error", title01, nodes_data.status_code, nodes_data.text)
+        r = create_preprints.request_nodes(email, nodes_data)
+        if r.status_code > 300:
+            print("create node error", r.text, r.status_code, title01)
             continue
         else:
-            node_id = data_object.get_json_id(nodes_data.text)
+            node_id = data_object.get_json_id(r.text)
 
 
         #create file
@@ -71,7 +70,7 @@ if __name__ == '__main__':
             create_result = create_preprints.request_preprints(email, preprints_data)
             if create_result.status_code > 300:
                 print("error: ", author_main, create_result.status_code, create_result.text)
-                continue
+                break
             else:
                 preprints_id = data_object.get_json_id(create_result.text)
                 # contributor_data = fm.create_contributor(user_id)
@@ -89,10 +88,13 @@ if __name__ == '__main__':
                 patch_data = fm.create_preprints_patch(preprints_id, p_year_month, po, abstract, doi)
                 r = create_preprints.patch_preprints(email, preprints_id, patch_data)
                 if r.status_code > 300:
-                    print("patch error", r.status_code, r.text, preprints_id)
+                    print("patch error second", r.status_code, r.text, preprints_id)
                     continue
+            else:
+                print("patch error first", r.status_code, r.text, preprints_id)
+                break
 
-        #add author_sub as contributors
+            #add author_sub as contributors
             if author_sub is not None:
                 result = author_sub.split(";")
                 for name in result:
@@ -102,14 +104,14 @@ if __name__ == '__main__':
                         sub_contributor_data = fm.create_contributor(author_sub_id)
                         r = create_preprints.patch_contributors(email, node_id, sub_contributor_data)
                         if r.status_code > 300:
-                            print("add author_sub failed ", name, author_sub_id, preprints_id)
+                            print("add author_sub failed ", r.text, name, author_sub_id, preprints_id)
 
-        #publish preprints to public
-        if file_id is not None and preprints_id is not None:
-            publish_data = fm.create_published(preprints_id)
-            r = create_preprints.patch_preprints(email, preprints_id, publish_data)
-            if r.status_code > 300:
-                print('publish error ', r.status_code, r.text, title01, preprints_id)
+            #publish preprints to public
+            if file_id is not None:
+                publish_data = fm.create_published(preprints_id)
+                r = create_preprints.patch_preprints(email, preprints_id, publish_data)
+                if r.status_code > 300:
+                    print('publish error ', r.status_code, r.text, title01, preprints_id)
 
 
     print("done! preprints")

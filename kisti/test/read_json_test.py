@@ -50,5 +50,11 @@ def read_po_condition():
     print(len(author_list))
 
 
+def read_total():
+    rj = read_json.ReadJson()
+    data = rj.read_json('json/kci_paper_library_one.json')
+    print(len(data))
+
+
 if __name__ == '__main__':
-    read_po_condition()
+    read_total()

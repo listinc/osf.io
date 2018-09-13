@@ -3,20 +3,24 @@ from random import randint
 
 class Subject():
     subject = {}
+    """
+    This value will be changed when it installed
+    Subject is below to sql
+    # select * from osf_subject where parent_id IS NULL;
+    """
 
     def __init__(self):
-
-        self.subject['law'] = ['5b584935cd0fb4000147522e']
-        self.subject['art'] = ['5b584936cd0fb40001475243']
-        self.subject['business'] = ['5b584936cd0fb40001475247']
-        self.subject['life'] = ['5b584936cd0fb40001475250']
-        self.subject['medicine'] = ['5b584936cd0fb40001475271']
-        self.subject['social'] = ['5b584937cd0fb400014752ba']
-        self.subject['education'] = ['5b584937cd0fb400014752c9']
-        self.subject['science'] = ['5b584937cd0fb400014752ea']
-        self.subject['architecture'] = ['5b584937cd0fb400014752eb']
-        self.subject['engineering'] = ['5b584938cd0fb4000147531e']
-        self.subject['library'] = ['5b584937cd0fb400014752ba', '5b584937cd0fb400014752cd']
+        self.subject['law'] = ['5b9618342b6e1e00014dc05f']
+        self.subject['art'] = ['5b9618342b6e1e00014dc074']
+        self.subject['business'] = ['5b9618342b6e1e00014dc078']
+        self.subject['life'] = ['5b9618342b6e1e00014dc081']
+        self.subject['medicine'] = ['5b9618352b6e1e00014dc0a2']
+        self.subject['social'] = ['5b9618362b6e1e00014dc0eb']
+        self.subject['education'] = ['5b9618362b6e1e00014dc0fa']
+        self.subject['science'] = ['5b9618372b6e1e00014dc11b']
+        self.subject['architecture'] = ['5b9618372b6e1e00014dc11c']
+        self.subject['engineering'] = ['5b9618382b6e1e00014dc14f']
+        self.subject['library'] = ['5b9618362b6e1e00014dc0eb', '5b9618362b6e1e00014dc0fe']
 
     def random_subject(self):
         val = randint(0, 9)
@@ -50,8 +54,9 @@ class Subject():
         architecture = ['건축', '인테리어']
         engineering = ['전산', '유체', '컴퓨터', '전기', '전자']
 
-        if po in library:
-            return self.subject['library']
+        for i in library:
+            if i in po:
+                return self.subject['library']
         for i in law:
             if i in po:
                 return self.subject['law']

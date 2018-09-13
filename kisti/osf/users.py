@@ -31,7 +31,7 @@ def create_the_user_execute(data):
 
 def create_user_email_dict():
     rj = read_json.ReadJson()
-    data = rj.read_json('./json/kci_paper.json')
+    data = rj.read_json('./json/kci_paper_library_one.json')
     author_list = rj.get_author(data)
 
     for index, author in enumerate(author_list):
@@ -39,9 +39,8 @@ def create_user_email_dict():
     author_list = list(set(author_list))
     samdasu = {}
     for index, author in enumerate(sorted(author_list)):
-        email = 'kisti{0}@gmail.com'.format(index)
+        email = 'ksim{0}@gmail.com'.format(index)
         samdasu[author] = email
 
     samdasu = collections.OrderedDict(sorted(samdasu.items()))
     return samdasu
-

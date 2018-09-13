@@ -24,6 +24,11 @@ class FormData():
         return samdasu
 
     def create_preprints_patch(self, preprints_id, p_year_month, po, abstract, doi):
+        """
+           'licenses' value will be changed when it installed
+           licenses is below to sql, license _id is no license
+           # select * from osf_nodelicense;
+           """
         data = {}
         attributes = {}
         attributes['description'] = abstract
@@ -37,7 +42,7 @@ class FormData():
         node = {}
         license = {}
         license_data = {}
-        license_data['id'] = '5b5846f86c9f6b0001869342'
+        license_data['id'] = '5b961432655680000163ec49'
         license_data['type'] = 'licenses'
         license['data'] = license_data
         provider_data = {}

@@ -4,8 +4,9 @@ from osf import request
 
 
 def confirm_user():
+    host = '112.218.235.198'
     cp = request.RequestPreprints()
-    conn_string = "host='localhost' dbname='osf' user='postgres'"
+    conn_string = "host='{}' dbname='osf' user='postgres'".format(host)
 
     conn = psycopg2.connect(conn_string)
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -21,7 +22,8 @@ def confirm_user():
             confirm_id = verification
 
         if confirm_id is not None:
-            sql_string = "select _id from osf_guid where object_id={} and content_type_id=32".format(id)
+            #content_type_id is always changed when service installed
+            sql_string = "select _id from osf_guid where object_id={} and content_type_id=1".format(id)
             cursor.execute(sql_string)
             samdasu2 = cursor.fetchone()
             guid = samdasu2.get('_id')
