@@ -3,7 +3,7 @@ import psycopg2.extras
 
 class OSFDB():
     def __init__(self):
-        self.host = '112.218.235.198'
+        self.host = 'localhost'
         self.db_name = 'osf'
         self.user = 'postgres'
         self.conn_string = "host='{}' dbname='{}' user='{}'".format(self.host, self.db_name, self.user)

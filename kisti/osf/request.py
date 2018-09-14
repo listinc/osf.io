@@ -6,6 +6,7 @@ from requests.auth import HTTPBasicAuth
 class RequestPreprints():
     def __init__(self):
         self.host = '112.218.235.198'
+        self.email = 'samdasu@li-st.com'
 
     def request_preprints(self, email, preprints_data):
         headers = {'content-type': 'application/json'}
@@ -66,9 +67,9 @@ class RequestPreprints():
 
     def request_preprints_list(self, page):
         url = 'http://{}:8000/v2/preprints/?page={}'.format(self.host, page)
-        r = requests.get(url, auth=HTTPBasicAuth('cbal@li-st.com', ''))
+        r = requests.get(url, auth=HTTPBasicAuth(self.email, ''))
         return r
 
     def request_contributors(self, url):
-        r = requests.get(url, auth=HTTPBasicAuth('cbal@li-st.com', ''))
+        r = requests.get(url, auth=HTTPBasicAuth(self.email, ''))
         return r

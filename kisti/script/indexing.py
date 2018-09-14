@@ -1,11 +1,15 @@
 import json
+import time
 from osf import request
 from osf import formdata
 
 
+start_time = time.time()
 rp = request.RequestPreprints()
 fm = formdata.FormData()
 for i in range(1, 100):
+    if i > 2:
+        break
     r = rp.request_preprints_list(i)
     if r.status_code < 300:
         datum = json.loads(r.text)
@@ -55,7 +59,7 @@ for i in range(1, 100):
 
         preprint['lists'] = lists
         preprint['publishers'] = ['Center for Open Science']
-        preprint['identifiers'] = ['http://localhost:5000/{}/'.format(id)]
+        preprint['identifiers'] = ['http://112.218.235.198:5000/{}/'.format(id)]
         contributor_list = []
         for key in contributors_form:
             contributor_list.append(key.get('name'))
@@ -69,5 +73,8 @@ for i in range(1, 100):
             print('error with : ' + id)
         else:
             print('created : '+id)
+
+
+print("user created in --- %s seconds ---" % (time.time() - start_time))
 
 

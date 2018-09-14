@@ -4,7 +4,7 @@ from osf import request
 
 
 def confirm_user():
-    host = '112.218.235.198'
+    host = 'localhost'
     cp = request.RequestPreprints()
     conn_string = "host='{}' dbname='osf' user='postgres'".format(host)
 
@@ -22,14 +22,18 @@ def confirm_user():
             confirm_id = verification
 
         if confirm_id is not None:
-            #content_type_id is always changed when service installed
+            """
+            content_type_id is always changed when service installed
+            You must check id
+            # select * from django_content_type
+            """
             sql_string = "select _id from osf_guid where object_id={} and content_type_id=1".format(id)
             cursor.execute(sql_string)
             samdasu2 = cursor.fetchone()
             guid = samdasu2.get('_id')
             r = cp.confirm_user(guid, confirm_id)
             if r.status_code > 299:
-                print(url, r.status_code)
+                print(r.text, r.status_code)
 
     conn.commit()
     print("done: confirm_all_user")
