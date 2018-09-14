@@ -718,9 +718,9 @@ def delete_index(index):
 
 @requires_search
 def create_index(index=None):
-    '''Creates index with some specified mappings to begin with,
+    """Creates index with some specified mappings to begin with,
     all of which are applied to all projects, components, preprints, and registrations.
-    '''
+    """
     index = index or INDEX
     document_types = ['project', 'component', 'registration', 'user', 'file', 'institution', 'preprint', 'collectionSubmission']
     project_like_types = ['project', 'component', 'registration', 'preprint']
@@ -795,7 +795,7 @@ def delete_doc(elastic_document_id, node, index=None, category=None):
 
 
 @requires_search
-def  search_contributor(query, page=0, size=10, exclude=None, current_user=None):
+def search_contributor(query, page=0, size=10, exclude=None, current_user=None):
     """Search for contributors to add to a project using elastic search. Request must
     include JSON data with a "query" field.
 
