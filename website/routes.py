@@ -403,6 +403,7 @@ def make_url_map(app):
         Rule('/help/', 'get', website_views.redirect_help, notemplate),
         Rule('/faq/', 'get', website_views.redirect_faq, notemplate),
         Rule(['/getting-started/', '/getting-started/email/', '/howosfworks/'], 'get', website_views.redirect_getting_started, notemplate),
+        # Rule('/support/', 'get', website_views.support, OsfWebRenderer('public/pages/support.mako', trust=False)),
         Rule(
             '/explore/',
             'get',
@@ -1056,8 +1057,11 @@ def make_url_map(app):
         Rule(['/search/', '/search/<type>/'], ['get', 'post'], search_views.search_search, json_renderer),
         Rule('/search/projects/', 'get', search_views.search_projects_by_title, json_renderer),
         Rule('/share/search/', 'get', website_views.legacy_share_v1_search, json_renderer),
-
     ], prefix='/api/v1')
+
+    process_rules(app, [
+        Rule('/search/creativeworks/_search', ['get', 'post'], search_views.search_preprints, json_renderer),
+    ], prefix='/api/v2')
 
     # Institution
 

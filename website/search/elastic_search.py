@@ -238,6 +238,43 @@ def search(query, index=None, doc_type='_all', raw=False):
     }
     return return_value
 
+
+@requires_search
+def search_preprints(query, index=None, doc_type='_all', raw=False):
+    """Search for a query
+
+    :param query: The substring of the username/project name/tag to search for
+    :param index:
+    :param doc_type:
+
+    :return: List of dictionaries, each containing the results, counts, tags and typeAliases
+        results: All results returned by the query, that are within the index and search type
+        counts: A dictionary in which keys are types and values are counts for that type, e.g, count['total'] is the sum of the other counts
+        tags: A list of tags that are returned by the search query
+        typeAliases: the doc_types that exist in the search database
+    """
+    index = index or INDEX
+    query_data = copy.deepcopy(query)
+
+    if 'query' in query_data:
+        if 1 < len(query_data['query']['bool']['filter']) <= 2:
+            try:
+                del query_data['query']['bool']['filter'][1]
+            except KeyError:
+                pass
+        elif 2 < len(query_data['query']['bool']['filter']):
+            try:
+                del query_data['query']['bool']['filter'][2]
+            except KeyError:
+                pass
+
+    # logger.info(query_data)
+    # Run the real query and get the results
+    raw_results = client().search(index=index, doc_type=doc_type, body=query_data)
+
+    return raw_results
+
+
 def format_results(results):
     ret = []
     for result in results:
