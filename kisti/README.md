@@ -1,7 +1,7 @@
 ## How to run the scripts for kisti
 
 1. Set up your environment
-- Implement the requirements setting `pip install psycopg2`
+- Implement the requirements setting `pip install psycopg2` `pip install requests`
 
 2. Set up your db, ip, file
 - `./osf/request.py` change host, email(default)
@@ -9,20 +9,19 @@
 - `./osf/confirm.py` change host
 - `./osf/subject.py` chage subject value
 > This value will be changed when it installed
-    Subject is below to sql
 
-    `select * from osf_subject where parent_id IS NULL;`
+`select * from osf_subject where parent_id IS NULL;`
 
-    social and behavioral sciences - library and information science
+social and behavioral sciences - library and information science
 
-    `select * from osf_subject where parent_id = 143;`
+`select * from osf_subject where parent_id = 143;`
     
 - `./osf/formdata.py` change licenses value
 > 'licenses' value will be changed when it installed
 
-	license_data['id'] is below to sql, license _id is no license
+license_data['id'] is below to sql, license _id is no license
 	
-	`select * from osf_nodelicense;`
+`select * from osf_nodelicense;`
 
 3. Check your api server on
 - `python ./test/request_test.py`
